@@ -6,8 +6,9 @@ const Navbar = () => {
       {/* logo and site name */}
       <div className="flex justify-between items-center">
         {/* I will add the image here later */}
+        <img src="/picprismlogo.png" alt="our logo" className="w-[50px]"/>
         <Link to="/" className="font-bold text-3xl">
-          Pic Galaxy
+          Pic-Galaxy
         </Link>
       </div>
 
