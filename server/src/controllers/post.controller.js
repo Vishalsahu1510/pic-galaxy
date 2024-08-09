@@ -45,7 +45,7 @@ const deletePost = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(new ApiResponse(200, "Post deleted successfully"));
+        .json(new ApiResponse(200, "","Post deleted successfully"));
 });
 
 const getAllPosts = asyncHandler(async (req, res) => {
@@ -64,8 +64,6 @@ const getMyPosts = asyncHandler(async (req, res) => {
 
     if (authorAccountType === "buyer") {
         const {purchased} = await User.findById(authorId).populate("purchased");
-        
-        // console.log(purchased);
 
         if (!purchased) {
           return res.status(404).json(new ApiResponse(404, "No posts found"));
@@ -143,17 +141,18 @@ const searchPosts = asyncHandler(async (req, res) => {
 const addToFavourites = asyncHandler(async (req, res) => {
     const authorId = req.user._id;
     const { postId } = req.params;
-
+        console.log(postId)
     const user = await User.findByIdAndUpdate(authorId, {
         $push: { favourites: postId }
     });
+    console.log(user)
     if (!user) {
         throw new ApiError(404, "User not found");
     }
 
     return res
         .status(200)
-        .json(new ApiResponse(200, "Post added to favourites"));
+        .json(new ApiResponse(200,"","Post added to favourites"));
 });
 
 const removeFromFavourites = asyncHandler(async (req, res) => {
@@ -169,7 +168,7 @@ const removeFromFavourites = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(new ApiResponse(200, "Post removed to favourites"));
+        .json(new ApiResponse(200, "","Post removed to favourites"));
 });
 
 const getFavourites = asyncHandler(async (req, res) => {

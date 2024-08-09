@@ -41,6 +41,20 @@ const PhotoManagement = () => {
   }, [])
 
 
+  const deletePost = async (id)=>{
+    try {
+      const res = await axios.delete(import.meta.env.VITE_API_URL + `/post/delete/${id}`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("accessToken")
+        }
+      })
+      const data = await res.data;
+      toast.success(data.message)      
+    } catch (error) {
+      toast.error(error.response.data.message)
+    }
+  }
+
   return (
     <div className="flex flex-col sm:flex-row">
       <div>
@@ -63,12 +77,14 @@ const PhotoManagement = () => {
                 <BiSolidMessageSquareEdit
                   title="Edit"
                   className="text-2xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"
+                  onClick={() => deletePost(_id)}
                 />
               }
               icon2={
                 <MdDelete
                   title="Delete"
                   className="text-2xl text-red-500 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"
+                  onClick={() => deletePost(_id)}
                 />
               }
             />

@@ -29,7 +29,6 @@ const Analytics = () => {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("accessToken"),
         },
-        withCredentials: true,
       }
     );
     const { data } = await res.data;

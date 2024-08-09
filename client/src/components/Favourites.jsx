@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import axios from "axios"
 import ImageCard from "./ImageCard";
 
-import { setFavouritePosts } from "../../../store/slices/postsSlice";
+import { setFavouritePosts } from "../../store/slices/postsSlice";
 
 ////    ----react-icons-------
 import { FaCartShopping } from "react-icons/fa6";
@@ -31,26 +31,26 @@ const Favourites = () => {
     }
   }
 
-  useEffect(() => {
-    getFavouritePosts()
-  }, [])
+  
 
 
   const removeFromFavourites = async (id) =>{
     try {
-      const res = await axios.put(import.meta.env.VITE_API_URL + `/posts/removeFromFavourites/${id}`, {
+      const res = await axios.put(import.meta.env.VITE_API_URL + `/posts/removeFromFavourites/${id}`,{}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-        },
-        withCredentials: true
+        }
       })
-      const { message } = await res.data;
-      toast.success(message)
+      const data = await res.data;
+      toast.success(data.message)
     } catch (error) {
       toast.error(error.response.data.message)
     }
   }
 
+  useEffect(() => {
+    getFavouritePosts()
+  }, [])
 
   return (
       

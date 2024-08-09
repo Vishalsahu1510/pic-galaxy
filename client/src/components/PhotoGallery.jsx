@@ -97,14 +97,14 @@ const PhotoGallery = () => {
   const addToFavourites = async (id) => {
     if (!isAuthenticated) return toast.error("Please login to add asset to favourites")
     try {
-      const res = await axios.put(import.meta.env.VITE_API_URL + `/posts/addToFavourites/${id}`, {}, {
+      const res = await axios.put(import.meta.env.VITE_API_URL + `/posts/addToFavourites/${id}`,{},{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-        },
-        withCredentials: true
+        }
       })
-      const { message } = await res.data;
-      toast.success(message)
+      const data = await res.data;
+      console.log(data)
+      toast.success(data.message)
     } catch (error) {
       toast.error(error.response.data.message)
     }
