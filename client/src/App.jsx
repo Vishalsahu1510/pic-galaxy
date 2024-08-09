@@ -1,19 +1,24 @@
+import { useRef, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
+import { } from "react-transition-group";
 import Navbar from "./components/Navbar";
-import GsapTransition from "./components/GsapTransition";
+import Footer from "./components/Footer";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
+import GsapTransition from "./components/GsapTransition";
 
-export default function App() {
+const App = () => {
   return (
     <>
       <Provider store={store}>
         <BrowserRouter>
           <Navbar />
           <GsapTransition />
-          {/* Add your footer here */}
+          <Footer />
         </BrowserRouter>
       </Provider>
     </>
   );
-}
+};
+
+export default App;

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useDebugValue, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { login } from "../../store/slices/authSlice";
@@ -25,17 +25,16 @@ const Login = () => {
         email,
         password,
       });
-      console.log(response.data);
+      // console.log(response.data);
       const token = response.data;
-      // console.log(token.message);
-      // console.log(token.data.user.accountType);
-      // localStorage.setItem("token", token);
+      // console.log(token);
+      // console.log(token.data.user);
       toast.success(token.message);
       // dipatch karna hai login -> jo bhi data aa raha hai sab push karna hai state me
       dipatch(login(token.data));
       navigate(`/${token.data.user.accountType}/profile`);
     } catch (error) {
-      console.error(error.response.data); // Log the error response
+      console.error(error.response.data.error); // Log the error response
       toast.error(error.response.data.error || "An error occurred");
     }
   };

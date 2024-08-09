@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
@@ -49,7 +50,7 @@ const userSchema = new Schema(
         purchased: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "Post"
+                ref: "Order"
             }
         ],
         favourites: [
@@ -104,5 +105,5 @@ userSchema.methods = {
         );
     }
 };
-
-export const User = model("User", userSchema);
+const User = model("User", userSchema);
+export  default User;

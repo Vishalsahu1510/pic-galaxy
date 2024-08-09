@@ -50,8 +50,8 @@ const Signup = () => {
   setAccountType("");
   setAvatar(null);
     } catch (error) {
-      console.error(error.response.data); // Log the error response
-      toast.error(error.response.data.message || "An error occurred");
+      console.error(error.response.data.error); // Log the error response
+      toast.error(error.response.data.error || "An error occurred");
     }
   };
 

@@ -1,6 +1,6 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/apiError.js";
-import { User } from "../models/user.model.js";
+import User from "../models/user.model.js";
 import { uploadOnCloudinary, deleteOnCloudinary } from "../utils/cloudinary.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
@@ -182,16 +182,17 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-    const incomingRefreshToken =
-        req.cookies?.refreshToken || req.body.refreshToken;
-
+    const incomingRefreshToken = req.cookies?.refreshToken || req.body.refreshToken;
+    // console.log("incomingRefreshToken------:",incomingRefreshToken)
     if (!incomingRefreshToken) {
         throw new ApiError(401, "unauthorized request");
     }
 
     const user = await User.findOne({
         refreshToken: incomingRefreshToken
-    });
+    }).select(
+        " -password -refreshToken"
+    );
 
     if (!user) {
         throw new ApiError(401, "Invalid refresh token");
@@ -216,12 +217,54 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
                 200,
                 {
                     accessToken,
-                    refreshToken
+                    refreshToken,
+                    user
                 },
                 "Access token refreshed"
             )
         );
 });
+
+const switchProfile = asyncHandler(async (req, res) => {
+    const authorId = req.user._id;
+    // console.log("authorid:" , authorId)
+    const authorAccountType = req.user.accountType;
+    // console.log("authorAccountType:" , authorAccountType)
+    try {
+      const user = await User.findByIdAndUpdate(authorId, {
+        accountType: authorAccountType === "buyer" ? "seller" : "buyer",
+      }).select(
+        " -password -refreshToken"
+    );
+    //   console.log("user------",user);
+      if (!user){
+        throw new ApiError(404, "User not found");
+      }
+  
+    //   const data = {
+    //     id: user._id,
+    //     accountType: user.accountType,
+    //     author: user.username,
+    //   };
+      
+      const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
+    //   console.log("accessToken",accessToken)
+      return res.status(200).json(new ApiResponse(
+        200,
+        {
+            accessToken,
+            refreshToken,
+            user
+        },
+        "Profile switched successfully" +
+        `Switched to ${user.accountType} `
+        
+      ));
+    } catch (error) {
+        throw new ApiError(500, "Error in Switch Profile");
+    }
+});
+
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
     const { oldPassword, newPassword } = req.body;
@@ -319,6 +362,8 @@ export {
     loginUser,
     logoutUser,
     refreshAccessToken,
+    switchProfile,
+
     changeCurrentPassword,
     getCurrentUser,
     updateUserDetails,
