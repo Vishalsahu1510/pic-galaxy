@@ -23,6 +23,7 @@ const uploadOnCloudinary = async (localFilePath) => {
         fs.unlinkSync(localFilePath); //remove file from localFilePath after uploading to cloudinary
         return result;
     } catch (error) {
+        console.log("upload on cloudinary failed", error);
         fs.unlinkSync(localFilePath);
         return error;
     }
@@ -37,8 +38,8 @@ const deleteOnCloudinary = async (public_id, resource_type="image") => {
             resource_type: `${resource_type}`
         });
     } catch (error) {
-        return error;
         console.log("delete on cloudinary failed", error);
+        return error;
     }
 };
 

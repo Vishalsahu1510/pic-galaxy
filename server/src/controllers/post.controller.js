@@ -45,7 +45,7 @@ const deletePost = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(new ApiResponse(200, "","Post deleted successfully"));
+        .json(new ApiResponse(200, "", "Post deleted successfully"));
 });
 
 const getAllPosts = asyncHandler(async (req, res) => {
@@ -59,25 +59,25 @@ const getAllPosts = asyncHandler(async (req, res) => {
 
 const getMyPosts = asyncHandler(async (req, res) => {
     const authorId = req.user._id;
-    
+
     const authorAccountType = req.user.accountType;
 
     if (authorAccountType === "buyer") {
-        const {purchased} = await User.findById(authorId).populate("purchased");
+        const { purchased } =
+            await User.findById(authorId).populate("purchased");
 
         if (!purchased) {
-          return res.status(404).json(new ApiResponse(404, "No posts found"));
+            return res.status(404).json(new ApiResponse(404, "No posts found"));
         }
 
         return res.status(200).json(new ApiResponse(200, purchased));
-        
     } else {
-        const {uploads} = await User.findById(authorId).populate("uploads");
+        const { uploads } = await User.findById(authorId).populate("uploads");
         if (!uploads) {
-          return res.status(404).json(new ApiResponse(404, "No posts found"));
+            return res.status(404).json(new ApiResponse(404, "No posts found"));
         }
 
-        return res.status(200).json(new ApiResponse(200,uploads));
+        return res.status(200).json(new ApiResponse(200, uploads));
     }
 });
 
@@ -87,7 +87,8 @@ const getPostsByDateRange = asyncHandler(async (req, res) => {
     let data;
 
     if (authorAccountType === "buyer") {
-        const { purchased } = await User.findById(authorId).populate("purchased");
+        const { purchased } =
+            await User.findById(authorId).populate("purchased");
         // console.log("purchased",purchased)
         data = purchased;
         // console.log("purchased",data)
@@ -141,18 +142,29 @@ const searchPosts = asyncHandler(async (req, res) => {
 const addToFavourites = asyncHandler(async (req, res) => {
     const authorId = req.user._id;
     const { postId } = req.params;
-        console.log(postId)
-    const user = await User.findByIdAndUpdate(authorId, {
-        $push: { favourites: postId }
-    });
-    console.log(user)
+    // console.log(postId)
+
+    const user = await User.findById(authorId);
     if (!user) {
         throw new ApiError(404, "User not found");
     }
 
+    const existingFavourite = user.favourites.includes(postId);
+    if (existingFavourite) {
+        return res
+            .status(200)
+            .json(new ApiResponse(200, "", "Post is already in favourites"));
+    }
+
+    await User.findByIdAndUpdate(authorId, {
+        $push: { favourites: postId }
+    });
+    console.log(user);
+    
+
     return res
         .status(200)
-        .json(new ApiResponse(200,"","Post added to favourites"));
+        .json(new ApiResponse(200, "", "Post added to favourites"));
 });
 
 const removeFromFavourites = asyncHandler(async (req, res) => {
@@ -168,7 +180,7 @@ const removeFromFavourites = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(new ApiResponse(200, "","Post removed to favourites"));
+        .json(new ApiResponse(200, "", "Post removed to favourites"));
 });
 
 const getFavourites = asyncHandler(async (req, res) => {
